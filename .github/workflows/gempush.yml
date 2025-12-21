@@ -1,0 +1,40 @@
+name: Ruby Gem
+'on': push
+jobs:
+  build:
+    name: Build + Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check if version already exists
+        id: check_version
+        run:
+          - >-
+            version=$(grep -oP 'VERSION = "K[^"]+' lib/*/version.rb | awk -F'.'
+            '{print $1"."$2"."$3})
+          - git fetch --unshallow --tags
+          - echo $?
+      - name: Set git tag
+        run:
+          - git config --local user.email "noreply@alchemic.it"
+          - git config --local user.name "AlchemicIT"
+          - >-
+            version=$(grep -oP 'VERSION = "K[^"]+' lib/*/version.rb | awk -F'.'
+            '{print $1"."$2"."$3})
+          - git tag -a $version -m "Version $version"
+          - git push --tags
+        if: env.version_exists == 'false'
+      - name: Publish to RubyGems
+        run:
+          - mkdir -p $HOME/.gem
+          - touch $HOME/.gem/credentials
+          - chmod 0600 $HOME/.gem/credentials
+          - |-
+            printf -- "---
+            :rubygems_api_key: ${GEM_HOST_API_KEY}
+            " > $HOME/.gem/credentials
+          - gem build *.gemspec
+          - gem push *.gem
+        if: env.version_exists == 'false'
+        env:
+          GEM_HOST_API_KEY: ${{secrets.RUBYGEMS_AUTH_TOKEN}}
