@@ -1,1 +1,87 @@
-it: ~
+it:
+  activerecord:
+    models:
+      army: "Esercito"
+      affiliation: "Affiliazione"
+      fighter: "Combattente"
+      rank: "Rango"
+      size: "Taglia"
+      path: "Via di Alleanza"
+      keyword: "Parola Chiave"
+      skill: "Abilità"
+      spell: "Magia"
+      miracle: "Miracolo"
+      artifact: "Artefatto"
+      nexus: "Nexus"
+      profile: "Profilo Armata"
+      stat_modifier: "Modificatore"
+      requirement: "Requisito"
+    attributes:
+      fighter:
+        name: "Nome"
+        title: "Titolo"
+        base_cost: "Costo Base"
+        movement_ground: "MOV (Suolo)"
+        movement_fly: "MOV (Volo)"
+        initiative: "INI (Iniziativa)"
+        attack: "ATT (Attacco)"
+        strength: "FOR (Forza)"
+        defence: "DIF (Difesa)"
+        resilience: "RES (Resistenza)"
+        aim: "TIR (Tiro)"
+        courage: "COR (Coraggio)"
+        fear: "PAU (Paura)"
+        discipline: "DIS (Disciplina)"
+        power: "POT (Potere)"
+        faith_create: "Fede (Creazione)"
+        faith_alter: "Fede (Alterazione)"
+        faith_destroy: "Fede (Distruzione)"
+      spell:
+        difficulty: "Difficoltà"
+        cost_string: "Costo"
+        range: "Portata"
+        duration: "Durata"
+        effect: "Effetto"
+      miracle:
+        fervor: "Fervore"
+        aspects: "Aspetti"
+      artifact:
+        cost: "Costo in Punti"
+        is_relic: "È una Reliquia?"
+      nexus:
+        structure: "Punti Struttura"
+        resistance: "Resistenza"
+  
+  # Etichette per l'Interfaccia Utente
+  army_builder:
+    actions:
+      add: "Aggiungi"
+      remove: "Rimuovi"
+      save: "Salva Lista"
+      calculate: "Calcola"
+      reset: "Resetta"
+    labels:
+      total_cost: "Costo Totale"
+      army_composition: "Composizione Armata"
+      available_modifiers: "Opzioni Disponibili"
+      requirements_met: "Requisiti Soddisfatti"
+      requirements_missing: "Requisiti Mancanti"
+      base_stats: "Statistiche Base"
+      modified_stats: "Statistiche Finali"
+    stats:
+      movement: "MOV"
+      initiative: "INI"
+      attack: "ATT"
+      strength: "FOR"
+      defence: "DIF"
+      resilience: "RES"
+      aim: "TIR"
+      courage: "COR"
+      fear: "PAU"
+      discipline: "DIS"
+      power: "POT"
+      faith: "FEDE"
+    messages:
+      affiliation_mismatch: "Questo combattente non può appartenere a questa affiliazione."
+      limit_exceeded: "Limite massimo superato per questo tipo di unità."
+      relic_unique: "Puoi avere una sola Reliquia per armata."

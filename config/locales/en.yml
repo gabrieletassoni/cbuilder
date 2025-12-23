@@ -1,1 +1,86 @@
-en: ~
+en:
+  activerecord:
+    models:
+      army: "Army"
+      affiliation: "Affiliation"
+      fighter: "Fighter"
+      rank: "Rank"
+      size: "Size"
+      path: "Path of Alliance"
+      keyword: "Keyword"
+      skill: "Skill"
+      spell: "Spell"
+      miracle: "Miracle"
+      artifact: "Artifact"
+      nexus: "Nexus"
+      profile: "Army Profile"
+      stat_modifier: "Modifier"
+      requirement: "Requirement"
+    attributes:
+      fighter:
+        name: "Name"
+        title: "Title"
+        base_cost: "Base Cost"
+        movement_ground: "MOV (Ground)"
+        movement_fly: "MOV (Fly)"
+        initiative: "INI (Initiative)"
+        attack: "ATT (Attack)"
+        strength: "STR (Strength)"
+        defence: "DEF (Defense)"
+        resilience: "RES (Resilience)"
+        aim: "AIM (Aim)"
+        courage: "COU (Courage)"
+        fear: "FEA (Fear)"
+        discipline: "DIS (Discipline)"
+        power: "POW (Power)"
+        faith_create: "Faith (Creation)"
+        faith_alter: "Faith (Alteration)"
+        faith_destroy: "Faith (Destruction)"
+      spell:
+        difficulty: "Difficulty"
+        cost_string: "Cost"
+        range: "Range"
+        duration: "Duration"
+        effect: "Effect"
+      miracle:
+        fervor: "Fervor"
+        aspects: "Aspects"
+      artifact:
+        cost: "Point Cost"
+        is_relic: "Is Relic?"
+      nexus:
+        structure: "Structure Points"
+        resistance: "Resistance"
+
+  army_builder:
+    actions:
+      add: "Add"
+      remove: "Remove"
+      save: "Save List"
+      calculate: "Calculate"
+      reset: "Reset"
+    labels:
+      total_cost: "Total Cost"
+      army_composition: "Army Composition"
+      available_modifiers: "Available Options"
+      requirements_met: "Requirements Met"
+      requirements_missing: "Requirements Missing"
+      base_stats: "Base Stats"
+      modified_stats: "Final Stats"
+    stats:
+      movement: "MOV"
+      initiative: "INI"
+      attack: "ATT"
+      strength: "STR"
+      defence: "DEF"
+      resilience: "RES"
+      aim: "AIM"
+      courage: "COU"
+      fear: "FEA"
+      discipline: "DIS"
+      power: "POW"
+      faith: "FAITH"
+    messages:
+      affiliation_mismatch: "This fighter cannot belong to this affiliation."
+      limit_exceeded: "Maximum limit exceeded for this unit type."
+      relic_unique: "You can only have one Relic per army."
