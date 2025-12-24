@@ -1,4 +1,15 @@
 en:
+  admin:
+    modification_engine:
+      label: "Modification Engine"
+    playable_entities:
+      label: "Playable Entities"
+    equipment_and_mysticism:
+      label: "Equipment and Mysticism"
+    core_entities:
+      label: "Core Entities"
+    army_builder:
+      label: "Army Builder"
   activerecord:
     models:
       army: "Army"

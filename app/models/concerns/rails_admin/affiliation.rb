@@ -3,8 +3,9 @@ module RailsAdmin::Affiliation
 
   included do
     rails_admin do
-      navigation_label I18n.t('admin.registries.label')
-      navigation_icon 'fa fa-file'
+      navigation_label I18n.t("admin.core_entities.label")
+      navigation_icon "fa fa-people-roof"
+      parent Army
     end
   end
 end

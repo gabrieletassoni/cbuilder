@@ -3,8 +3,9 @@ module RailsAdmin::ProfileModifier
 
   included do
     rails_admin do
-      navigation_label I18n.t('admin.registries.label')
-      navigation_icon 'fa fa-file'
+      navigation_label I18n.t("admin.playable_entities.label")
+      navigation_icon "fa fa-star"
+      parent Profile
     end
   end
 end

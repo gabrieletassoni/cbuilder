@@ -1,4 +1,15 @@
 fr:
+  admin:
+    modification_engine:
+      label: "Module de Modification"
+    playable_entities:
+      label: "Entités Jouables"
+    equipment_and_mysticism:
+      label: "Équipement et Mysticism"
+    core_entities:
+      label: "Entités Principales"
+    army_builder:
+      label: "Constructeur d'Armée"
   activerecord:
     models:
       army: "Armée"

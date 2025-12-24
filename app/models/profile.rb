@@ -7,8 +7,17 @@ class Profile < ApplicationRecord
   has_many :profile_modifiers, dependent: :destroy
   has_many :stat_modifiers, through: :profile_modifiers
 
+  # Relazione con le liste in cui è usato
+  has_many :list_entries, dependent: :destroy
+  has_many :army_lists, through: :list_entries
+
   # Callback: Applica i bonus obbligatori dell'affiliazione alla creazione
   after_create :apply_mandatory_affiliation_modifiers
+
+  # Helper per sapere se è usato
+  def used_in_lists?
+    list_entries.exists?
+  end
 
   # Calcola il valore finale di una statistica
   def current_value(stat_code)

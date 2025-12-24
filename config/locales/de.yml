@@ -1,4 +1,15 @@
 de:
+  admin:
+    modification_engine:
+      label: "Modifikations-Engine"
+    playable_entities:
+      label: "Spielbare Einheiten"
+    equipment_and_mysticism:
+      label: "Ausrüstung und Mystik"
+    core_entities:
+      label: "Kernentitäten"
+    army_builder:
+      label: "Armeebauer"
   activerecord:
     models:
       army: "Armee"

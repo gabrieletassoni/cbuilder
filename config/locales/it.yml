@@ -1,4 +1,15 @@
 it:
+  admin:
+    modification_engine:
+      label: "Motore di Modifica"
+    playable_entities:
+      label: "Entità Giocabili"
+    equipment_and_mysticism:
+      label: "Equipaggiamento e Misticismo"
+    core_entities:
+      label: "Entità Principali"
+    army_builder:
+      label: "Costruttore di Eserciti"
   activerecord:
     models:
       army: "Esercito"
