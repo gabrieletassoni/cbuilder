@@ -1,4 +1,4 @@
-module Api::FightersKeyword
+module Api::FighterKeyword
   extend ActiveSupport::Concern
 
   included do

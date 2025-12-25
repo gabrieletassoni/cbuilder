@@ -1,4 +1,4 @@
-module RailsAdmin::FightersMiracle
+module RailsAdmin::FighterMiracle
   extend ActiveSupport::Concern
 
   included do

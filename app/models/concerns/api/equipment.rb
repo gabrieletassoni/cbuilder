@@ -1,4 +1,4 @@
-module Api::FightersMiracle
+module Api::Equipment
   extend ActiveSupport::Concern
 
   included do

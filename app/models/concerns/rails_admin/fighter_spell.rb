@@ -1,4 +1,4 @@
-module RailsAdmin::FightersSpell
+module RailsAdmin::FighterSpell
   extend ActiveSupport::Concern
 
   included do

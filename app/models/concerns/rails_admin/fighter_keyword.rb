@@ -1,4 +1,4 @@
-module RailsAdmin::FightersKeyword
+module RailsAdmin::FighterKeyword
   extend ActiveSupport::Concern
 
   included do
