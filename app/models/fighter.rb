@@ -8,12 +8,13 @@ class Fighter < ApplicationRecord
   belongs_to :path, optional: true # Via d'alleanza
   belongs_to :affiliation, optional: true # Se è una variante specifica
 
-  has_many :fighter_skills, dependent: :destroy
-  has_many :skills, through: :fighter_skills
+  has_many :fighters_skills, dependent: :destroy
+  has_many :skills, through: :fighters_skills
   has_and_belongs_to_many :keywords
-
   has_and_belongs_to_many :spells
   has_and_belongs_to_many :miracles
+  # Equipaggiamento di default (scritto sulla carta)
+  has_and_belongs_to_many :equipment
 
   has_many :requirements_as_target, class_name: "Requirement", as: :required_entity, dependent: :destroy
 

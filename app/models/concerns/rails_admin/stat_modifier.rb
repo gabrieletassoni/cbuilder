@@ -4,7 +4,7 @@ module RailsAdmin::StatModifier
   included do
     rails_admin do
       navigation_label I18n.t("admin.modification_engine.label")
-      navigation_icon "fa fa-file"
+      navigation_icon "fa fa-pen-to-square"
     end
   end
 end

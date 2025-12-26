@@ -11,8 +11,13 @@ class Profile < ApplicationRecord
   has_many :list_entries, dependent: :destroy
   has_many :army_lists, through: :list_entries
 
+  # Equipaggiamento effettivo (può differire dal fighter base se modificato)
+  has_and_belongs_to_many :equipment
+
   # Callback: Applica i bonus obbligatori dell'affiliazione alla creazione
   after_create :apply_mandatory_affiliation_modifiers
+  # Callback: Quando creo un profilo, copio l'equipaggiamento base del Fighter
+  after_create :copy_base_equipment
 
   # Helper per sapere se è usato
   def used_in_lists?
@@ -20,33 +25,48 @@ class Profile < ApplicationRecord
   end
 
   # Calcola il valore finale di una statistica
+  # AGGIORNAMENTO LOGICA DI CALCOLO
   def current_value(stat_code)
     base = fighter.raw_stat(stat_code)
 
-    # Ottieni i modificatori applicati che impattano questa stat
-    mods = stat_modifiers.includes(:modification_type, :stat_definition)
-                         .where(stat_definitions: { code: stat_code })
+    # Raccogliamo TUTTI i modificatori da TUTTE le fonti
+    # 1. Modificatori manuali diretti (ProfileModifier)
+    # 2. Modificatori dall'Affiliazione (tramite ProfileModifier automatici)
+    # 3. Modificatori dagli Artefatti (assumendo relazione :artifacts)
+    # 4. Modificatori dall'Equipaggiamento (NUOVO)
 
-    # 1. Applica i SET (sovrascritture)
-    mods.select { |m| m.modification_type.code == "set" }.each do |mod|
+    all_modifiers = stat_modifiers.to_a +
+                    equipment.flat_map(&:stat_modifiers) +
+                    artifacts.flat_map(&:stat_modifiers) # Se hai artifacts
+
+    # Filtriamo quelli rilevanti per questa statistica
+    relevant_mods = all_modifiers.select { |m| m.stat_definition.code == stat_code }
+
+    # Filtriamo quelli i cui requisiti condizionali sono soddisfatti (es. "Solo se Mago")
+    active_mods = relevant_mods.select { |m| m.applies_to?(fighter) }
+
+    # Applica logica matematica (Set, Add, Sub)
+    # 1. SET (Priorità)
+    active_mods.select { |m| m.modification_type.code == "set" }.each do |mod|
       base = mod.value_integer
     end
 
-    # 2. Applica ADD e SUB
-    mods.select { |m| ["add", "sub"].include?(m.modification_type.code) }.each do |mod|
-      if mod.modification_type.code == "add"
-        base += mod.value_integer
-      else
-        base -= mod.value_integer
-      end
+    # 2. ADD/SUB
+    active_mods.select { |m| ["add", "sub"].include?(m.modification_type.code) }.each do |mod|
+      val = mod.value_integer
+      mod.modification_type.code == "add" ? base += val : base -= val
     end
 
-    return base < 0 ? 0 : base # Mai sotto zero
+    [base, 0].max
   end
 
   # Helper per il costo totale
   def total_cost
-    current_value("cost")
+    base_calc = current_value("cost")
+    equip_cost = equipment.sum(:cost)
+    # artifact_cost = artifacts.sum(:cost)
+
+    base_calc + equip_cost
   end
 
   # Ritorna le abilità attive (quelle del fighter + quelle garantite dai modificatori)
@@ -67,5 +87,10 @@ class Profile < ApplicationRecord
         self.profile_modifiers.create(stat_modifier: mod)
       end
     end
+  end
+
+  def copy_base_equipment
+    # Copia l'equipaggiamento di default dal Fighter al Profile
+    self.equipment = fighter.equipment
   end
 end

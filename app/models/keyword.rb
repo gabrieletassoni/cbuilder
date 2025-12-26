@@ -3,8 +3,7 @@ class Keyword < ApplicationRecord
   include RailsAdmin::Keyword
 
   # Has many fighters through the join table
-  has_many :fighters_keywords, dependent: :destroy
-  has_many :fighters, through: :fighters_keywords
+  has_and_belongs_to_many :fighters
 
   has_many :requirements, as: :required_entity, dependent: :destroy
 end

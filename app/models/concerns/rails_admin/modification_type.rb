@@ -3,8 +3,8 @@ module RailsAdmin::ModificationType
 
   included do
     rails_admin do
-      navigation_label I18n.t('admin.registries.label')
-      navigation_icon 'fa fa-file'
+      navigation_label I18n.t("admin.registries.label")
+      navigation_icon "fa fa-quote-right"
     end
   end
 end
