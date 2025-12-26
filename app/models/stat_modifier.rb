@@ -8,6 +8,10 @@ class StatModifier < ApplicationRecord
 
   has_many :requirements, as: :restrictable, dependent: :destroy
 
+  def title
+    "#{modification_type&.description} #{stat_definition&.label} #{value_integer.presence|| value_string.presence || granted_skill&.name}"
+  end
+
   # Controlla se questo modificatore specifico si applica al combattente
   # Es. Un'affiliazione dà +1 FOR ai Guerrieri e +1 POT ai Maghi.
   # Questo metodo controlla se sei un Guerriero.

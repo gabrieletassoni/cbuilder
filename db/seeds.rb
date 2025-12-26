@@ -55,6 +55,7 @@ puts "Seeding Data into DB from cbuilder - DONE"
   "faith_create",
   "faith_alter",
   "faith_destroy",
+  "base_dice_pool",
   "skills",
 ].each do |code|
   StatDefinition.find_or_create_by(code: code) do |sd|
@@ -199,3 +200,14 @@ puts "Seeding Paths into DB - DONE"
   end
 end
 puts "Seeding Armies into DB - DONE"
+
+[
+  { name: :active, description: "Active abilities have no effect and cannot be used if the fighter who has them is Rotten. Their usage must be declared." },
+  { name: :passive, description: "Passive abilities are always effective (unless effects explicitly deny their activation)." },
+  { name: "*", description: "Abilities marked with an (*) are included or excluded from some game effects." },
+].each do |ability_type_code|
+  AbilityCategory.find_or_create_by(name: ability_type_code[:name]) do |at|
+    at.description = ability_type_code[:description]
+  end
+end
+puts "Seeding Ability Categories into DB - DONE"
