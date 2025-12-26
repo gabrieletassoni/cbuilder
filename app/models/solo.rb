@@ -1,4 +1,6 @@
 class Solo < ApplicationRecord
+  include Api::Solo
+  include RailsAdmin::Solo
   belongs_to :affiliation
 
   # Relazione N:M con i Profili

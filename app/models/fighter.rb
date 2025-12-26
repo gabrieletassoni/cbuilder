@@ -24,6 +24,7 @@ class Fighter < ApplicationRecord
 
   validates :name, presence: true
   validates :base_cost, numericality: { greater_than_or_equal_to: 0 }
+  validate :rank_compatibility_with_stats
 
   # Metodo di utilità per leggere il valore raw dal DB
   def raw_stat(code)
@@ -35,5 +36,37 @@ class Fighter < ApplicationRecord
       else code.to_sym
       end
     self.send(column) || 0
+  end
+
+  private
+  def rank_compatibility_with_stats
+    return unless rank && rank.rank_category
+
+    category_code = rank.rank_category.code
+
+    case category_code
+    when 'mage'
+      # Un rango da Mago richiede POT > 0
+      if (power || 0) <= 0
+        errors.add(:rank, "di tipo Mago richiede un valore di Potere (POT) superiore a 0.")
+      end
+
+    when 'faithful'
+      # Un rango da Fedele richiede FEDE > 0
+      total_faith = (faith_create || 0) + (faith_alter || 0) + (faith_destroy || 0)
+      if total_faith <= 0
+        errors.add(:rank, "di tipo Fedele richiede almeno un Aspetto della Fede.")
+      end
+
+    when 'warrior'
+      # Opzionale: Un Guerriero Puro non dovrebbe avere magia o fede?
+      # Regola C5: "I Guerrieri Puri sono privi di Potere e Fede"
+      has_magic = (power || 0) > 0
+      has_faith = ((faith_create || 0) + (faith_alter || 0) + (faith_destroy || 0)) > 0
+      
+      if has_magic || has_faith
+        errors.add(:rank, "di tipo Guerriero Puro non può essere assegnato a un Mistico (POT o FEDE > 0).")
+      end
+    end
   end
 end

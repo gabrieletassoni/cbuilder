@@ -16,9 +16,18 @@ class SetupInitialSchema < ActiveRecord::Migration[7.2]
     end
     add_index :armies, :name, unique: true
 
+    create_table :rank_categories do |t|
+      t.string :name, null: false       # Es. "Guerriero Puro"
+      t.string :code, null: false       # Es. "warrior" (per logica interna)
+      t.text :description
+      t.timestamps
+    end
+    add_index :rank_categories, :code, unique: true
+
     create_table :ranks do |t|
       t.string :name, null: false
       t.integer :value, default: 1
+      t.references :rank_category, foreign_key: true, null: false
       t.timestamps
     end
     add_index :ranks, :name, unique: true

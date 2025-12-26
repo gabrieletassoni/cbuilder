@@ -90,30 +90,86 @@ puts "Seeding Sizes into DB - DONE"
 
 # Ranks
 # name,value
-[
-  # Warriors
-  { name: "Irregular", value: 1 },
-  { name: "Regular", value: 1 },
-  { name: "Veteran", value: 1 },
-  { name: "Creature", value: 1 },
-  { name: "Special", value: 2 },
-  { name: "Elite", value: 2 },
-  { name: "Living Legend", value: 3 },
-  { name: "Major Ally", value: 4 },
-  # Mages
-  { name: "Initiate", value: 1 },
-  { name: "Adept", value: 2 },
-  { name: "Master", value: 3 },
-  { name: "Virtuoso", value: 4 },
-  # Faithful
-  { name: "Devout", value: 1 },
-  { name: "Zealot", value: 2 },
-  { name: "Dean", value: 3 },
-  { name: "Avatar", value: 4 },
-].each do |rank_attrs|
-  Rank.find_or_create_by(name: rank_attrs[:name]) do |r|
-    r.value = rank_attrs[:value]
+puts "--- Creazione Categorie Ranghi ---"
+
+cat_warrior = RankCategory.find_or_create_by(name: "Pure Warrior") do |rc|
+  rc.code = "warrior"
+  rc.description = "Pure Warriors (no Magic or Faith requirements)."
+end
+
+cat_mage = RankCategory.find_or_create_by(name: "Mage") do |rc|
+  rc.code = "mage"
+  rc.description = "Users of Magic (POW)."
+end
+
+cat_faithful = RankCategory.find_or_create_by(name: "Faithful") do |rc|
+  rc.code = "faithful"
+  rc.description = "Users of Miracles (FAITH)."
+end
+
+puts "--- Creazione Ranghi ---"
+
+# Ranghi Guerrieri
+# "Irregular" has rank 0
+Rank.find_or_create_by(name: "Irregular") do |r|
+  r.value = 0
+  r.rank_category = cat_warrior
+end
+["Regular", "Veteran", "Creature", "War Machine"].each do |name|
+  Rank.find_or_create_by(name: name) do |r|
+    r.value = 1
+    r.rank_category = cat_warrior
   end
+end
+["Special", "Elite"].each do |name|
+  Rank.find_or_create_by(name: name) do |r|
+    r.value = 2
+    r.rank_category = cat_warrior
+  end
+end
+Rank.find_or_create_by(name: "Living Legend") do |r|
+  r.value = 3
+  r.rank_category = cat_warrior
+end
+Rank.find_or_create_by(name: "Major Ally") do |r|
+  r.value = 4
+  r.rank_category = cat_warrior
+end
+
+# Ranghi Maghi
+Rank.find_or_create_by(name: "Initiate") do |r|
+  r.value = 1
+  r.rank_category = cat_mage
+end
+Rank.find_or_create_by(name: "Adept") do |r|
+  r.value = 2
+  r.rank_category = cat_mage
+end
+Rank.find_or_create_by(name: "Master") do |r|
+  r.value = 3
+  r.rank_category = cat_mage
+end
+Rank.find_or_create_by(name: "Virtuoso") do |r|
+  r.value = 4
+  r.rank_category = cat_mage
+end
+
+# Ranghi Fedeli
+Rank.find_or_create_by(name: "Devotee") do |r|
+  r.value = 1
+  r.rank_category = cat_faithful
+end
+Rank.find_or_create_by(name: "Zealot") do |r|
+  r.value = 2
+  r.rank_category = cat_faithful
+end
+Rank.find_or_create_by(name: "Dean") do |r|
+  r.value = 3
+  r.rank_category = cat_faithful
+end
+Rank.find_or_create_by(name: "Avatar") do |r|
+  r.value = 4
+  r.rank_category = cat_faithful
 end
 puts "Seeding Ranks into DB - DONE"
 # Paths of alliance

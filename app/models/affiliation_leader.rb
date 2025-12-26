@@ -1,4 +1,7 @@
 class AffiliationLeader < ApplicationRecord
+  include Api::AffiliationLeader
+  include RailsAdmin::AffiliationLeader
+
   belongs_to :affiliation
   belongs_to :fighter
 
