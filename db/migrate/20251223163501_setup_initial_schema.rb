@@ -18,7 +18,7 @@ class SetupInitialSchema < ActiveRecord::Migration[7.2]
     create_table :sizes do |t|
       t.string :name, null: false
       t.integer :base_wounds, default: 1
-      t.integer :base_power, default: 1
+      t.integer :base_force, default: 1
       t.string :base_dimensions
       t.timestamps
     end
