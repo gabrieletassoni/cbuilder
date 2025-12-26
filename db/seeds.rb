@@ -130,3 +130,16 @@ puts "Seeding Ranks into DB - DONE"
   end
 end
 puts "Seeding Paths into DB - DONE"
+
+# Armies
+# name,description,path_id
+[
+  { name: "Devourers of Vile-Tis", description: "One day, a meteor fell in the forest of Caer Laen, and from that strange stone emerged a wounded God, filled with hatred for the other deities: the Beast. The Beast met Ellis, a great Wolfen leader, and revealed to him the truth about his and his Wolfen brothers' origins. He revealed the plan of the goddess Yllia, an evil deity who hated her children and was ready to sacrifice them all in the final battle of Ragnarok. Shocked but strengthened by a new awareness, Ellis united under a single banner all those seeking vengeance against the Gods and Yllia, and marches on in search of vengeance.", path_name: "The Meanders of Darkness" },
+].each do |army_attrs|
+  path = Path.find_by(name: army_attrs.delete(:path_name))
+  Army.find_or_create_by(name: army_attrs[:name]) do |a|
+    a.description = army_attrs[:description]
+    a.path = path
+  end
+end
+puts "Seeding Armies into DB - DONE"

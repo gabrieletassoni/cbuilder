@@ -5,7 +5,6 @@ class Fighter < ApplicationRecord
   belongs_to :army
   belongs_to :rank
   belongs_to :size
-  belongs_to :path, optional: true # Via d'alleanza
   belongs_to :affiliation, optional: true # Se è una variante specifica
 
   has_many :fighters_skills, dependent: :destroy
@@ -19,6 +18,9 @@ class Fighter < ApplicationRecord
   has_many :requirements_as_target, class_name: "Requirement", as: :required_entity, dependent: :destroy
 
   has_many :profiles # Le istanze create dagli utenti
+
+  has_many :affiliation_leaders
+  has_many :led_affiliations, through: :affiliation_leaders, source: :affiliation
 
   validates :name, presence: true
   validates :base_cost, numericality: { greater_than_or_equal_to: 0 }

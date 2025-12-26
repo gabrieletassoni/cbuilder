@@ -1,9 +1,17 @@
 class SetupInitialSchema < ActiveRecord::Migration[7.2]
   def change
     # --- LOOKUP TABLES ---
+    create_table :paths do |t|
+      t.string :name, null: false
+      t.text :description
+      t.timestamps
+    end
+    add_index :paths, :name, unique: true
+
     create_table :armies do |t|
       t.string :name, null: false
       t.text :description
+      t.references :path, foreign_key: true
       t.timestamps
     end
     add_index :armies, :name, unique: true
@@ -24,26 +32,27 @@ class SetupInitialSchema < ActiveRecord::Migration[7.2]
     end
     add_index :sizes, :name, unique: true
 
-    create_table :paths do |t|
-      t.string :name, null: false; t.text :description; t.timestamps
-    end
-    add_index :paths, :name, unique: true
-
     create_table :keywords do |t|
-      t.string :name, null: false; t.text :description; t.timestamps
+      t.string :name, null: false
+      t.text :description
+      t.timestamps
     end
     add_index :keywords, :name, unique: true
 
     # Fondamentale per il calcolo dinamico
     create_table :stat_definitions do |t|
       t.string :code, null: false  # es: 'strength', 'attack'
-      t.string :label; t.text :description; t.timestamps
+      t.string :label
+      t.text :description
+      t.timestamps
     end
     add_index :stat_definitions, :code, unique: true
 
     create_table :modification_types do |t|
       t.string :code, null: false # es: 'add', 'set', 'grant_skill'
-      t.string :symbol; t.text :description; t.timestamps
+      t.string :symbol
+      t.text :description
+      t.timestamps
     end
     add_index :modification_types, :code, unique: true
 
@@ -56,6 +65,16 @@ class SetupInitialSchema < ActiveRecord::Migration[7.2]
     end
     add_index :affiliations, [:army_id, :name] # Ricerca veloce per armata
 
+    create_table :solos do |t|
+      t.string :name, null: false
+      t.text :description
+      t.integer :cost, default: 0
+      # Un Solo appartiene ESCLUSIVAMENTE a un'affiliazione
+      t.references :affiliation, null: false, foreign_key: true
+      t.timestamps
+    end
+    add_index :solos, :name, unique: true
+
     create_table :fighters do |t|
       t.string :name, null: false
       t.string :title
@@ -63,18 +82,27 @@ class SetupInitialSchema < ActiveRecord::Migration[7.2]
       t.references :affiliation, foreign_key: true # Nullable (profili base)
       t.references :rank, null: false, foreign_key: true
       t.references :size, null: false, foreign_key: true
-      t.references :path, foreign_key: true
 
       t.integer :base_cost, default: 0
       t.boolean :is_character, default: false
       t.boolean :is_base_profile, default: true
 
       # Stats (Nullable perché non tutti hanno tutto, es: macchine no DIS)
-      t.float :movement_ground; t.float :movement_fly
-      t.integer :initiative; t.integer :attack; t.integer :strength; t.integer :defence; t.integer :resilience
-      t.integer :aim; t.integer :courage; t.integer :fear; t.integer :discipline
+      t.float :movement_ground
+      t.float :movement_fly
+      t.integer :initiative
+      t.integer :attack
+      t.integer :strength
+      t.integer :defence
+      t.integer :resilience
+      t.integer :aim
+      t.integer :courage
+      t.integer :fear
+      t.integer :discipline
       t.integer :power
-      t.integer :faith_create; t.integer :faith_alter; t.integer :faith_destroy
+      t.integer :faith_create
+      t.integer :faith_alter
+      t.integer :faith_destroy
 
       t.timestamps
     end
@@ -84,9 +112,26 @@ class SetupInitialSchema < ActiveRecord::Migration[7.2]
     create_join_table :fighters, :keywords do |t|
       t.index [:fighter_id, :keyword_id], unique: true
     end
+
+    create_table :affiliation_leaders do |t|
+      t.references :affiliation, null: false, foreign_key: true
+      t.references :fighter, null: false, foreign_key: true # Il "Fighter" (definizione) che è capo
+
+      # Opzionale: flag se la presenza è obbligatoria per usare l'affiliazione
+      t.boolean :required, default: false
+
+      t.timestamps
+    end
+
+    # Un fighter può essere capo di una specifica affiliazione una sola volta
+    add_index :affiliation_leaders, [:affiliation_id, :fighter_id], unique: true
+
     # --- SKILLS & MAGIC ---
     create_table :skills do |t|
-      t.string :name, null: false; t.text :description; t.boolean :has_value, default: false; t.timestamps
+      t.string :name, null: false
+      t.text :description
+      t.boolean :has_value, default: false
+      t.timestamps
     end
     add_index :skills, :name, unique: true
 
@@ -98,19 +143,27 @@ class SetupInitialSchema < ActiveRecord::Migration[7.2]
     end
 
     create_table :magic_paths do |t|
-      t.string :name; t.string :element; t.timestamps
+      t.string :name
+      t.string :element
+      t.timestamps
     end
     add_index :magic_paths, :name, unique: true
 
     create_table :deities do |t|
-      t.string :name; t.timestamps
+      t.string :name
+      t.timestamps
     end
     add_index :deities, :name, unique: true
 
     create_table :spells do |t|
       t.string :name, null: false
       t.references :magic_path, foreign_key: true
-      t.string :difficulty; t.string :cost_string; t.string :range; t.string :duration; t.text :effect
+      t.references :army, foreign_key: true
+      t.string :difficulty
+      t.string :cost_string
+      t.string :range
+      t.string :duration
+      t.text :effect
       t.timestamps
     end
     add_index :spells, :name, unique: true
@@ -118,7 +171,15 @@ class SetupInitialSchema < ActiveRecord::Migration[7.2]
     create_table :miracles do |t|
       t.string :name, null: false
       t.references :deity, foreign_key: true
-      t.string :aspects; t.string :fervor; t.string :difficulty; t.string :range; t.string :duration; t.text :effect
+      t.references :army, foreign_key: true
+      t.string :aspect_creation
+      t.string :aspect_alteration
+      t.string :aspect_destruction
+      t.string :fervor
+      t.string :difficulty
+      t.string :range
+      t.string :duration
+      t.text :effect
       t.timestamps
     end
     add_index :miracles, :name, unique: true
@@ -137,13 +198,16 @@ class SetupInitialSchema < ActiveRecord::Migration[7.2]
       t.text :description
       t.integer :cost, default: 0
       t.boolean :is_relic, default: false
+      t.references :army, foreign_key: true
       t.timestamps
     end
     add_index :artifacts, :name, unique: true
 
     create_table :nexuses do |t|
       t.string :name, null: false
-      t.integer :resistance; t.integer :structure; t.integer :cost
+      t.integer :resistance
+      t.integer :structure
+      t.integer :cost
       t.text :effect
       t.references :army, foreign_key: true
       t.timestamps
@@ -185,6 +249,10 @@ class SetupInitialSchema < ActiveRecord::Migration[7.2]
       t.references :affiliation, foreign_key: true # L'affiliazione scelta per la lista
       t.string :custom_name
       t.timestamps
+    end
+
+    create_join_table :profiles, :solos do |t|
+      t.index [:profile_id, :solo_id], unique: true
     end
 
     create_table :profile_modifiers do |t|
