@@ -2,7 +2,7 @@ class Skill < ApplicationRecord
   include Api::Skill
   include RailsAdmin::Skill
 
-  has_and_belongs_to_many :ability_categories
+  has_and_belongs_to_many :skill_categories
 
   # Il Solo fornisce bonus (es. +1 AUDACIA) tramite StatModifier
   has_many :stat_modifiers, as: :source, dependent: :destroy

@@ -206,8 +206,8 @@ puts "Seeding Armies into DB - DONE"
   { name: :passive, description: "Passive abilities are always effective (unless effects explicitly deny their activation)." },
   { name: "*", description: "Abilities marked with an (*) are included or excluded from some game effects." },
 ].each do |ability_type_code|
-  AbilityCategory.find_or_create_by(name: ability_type_code[:name]) do |at|
+  SkillCategory.find_or_create_by(name: ability_type_code[:name]) do |at|
     at.description = ability_type_code[:description]
   end
 end
-puts "Seeding Ability Categories into DB - DONE"
+puts "Seeding Skill Categories into DB - DONE"
