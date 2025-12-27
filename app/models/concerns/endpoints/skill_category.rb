@@ -1,4 +1,4 @@
-class Endpoints::AbilityCategory < NonCrudEndpoints
+class Endpoints::SkillCategory < NonCrudEndpoints
   # self.desc 'AbilityCategory', :test, {
   #   # Define the action name using openapi swagger format
   #   get: {
