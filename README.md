@@ -342,11 +342,3 @@ class ArmyList < ApplicationRecord
 end
 
 ```
-
-## Seeds Creation
-
-Using SeedDump or similar, populate the database with:
-
-```bash
-rails db:seed:dump MODELS=ModificationType,StatDefinition,Size,Path,RankCategory,Rank,SkillCategory,Army INCLUDE_ALL=true UPSERT_ALL=true FILE=/workspaces/project/backend/vendor/submodules/cbuilder/db/seeds/initial_catalog_seeds.rb
-```
