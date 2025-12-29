@@ -2,14 +2,12 @@ class StatModifier < ApplicationRecord
   include Api::StatModifier
   include RailsAdmin::StatModifier
   belongs_to :source, polymorphic: true # Affiliation, Artifact, Spell...
-  belongs_to :stat_definition
-  belongs_to :modification_type
-  belongs_to :granted_skill, class_name: "Skill", optional: true
 
   has_many :requirements, as: :restrictable, dependent: :destroy
+  accepts_nested_attributes_for :requirements, allow_destroy: true
 
   def title
-    "#{modification_type&.description} #{stat_definition&.label} #{value_integer.presence|| value_string.presence || granted_skill&.name}"
+    "#{modification_type&.description} #{stat_definition&.label} #{value_integer.presence || value_string}"
   end
 
   # Controlla se questo modificatore specifico si applica al combattente

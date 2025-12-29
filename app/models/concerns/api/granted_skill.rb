@@ -1,4 +1,4 @@
-module Api::ModificationType
+module Api::GrantedSkill
   extend ActiveSupport::Concern
 
   included do

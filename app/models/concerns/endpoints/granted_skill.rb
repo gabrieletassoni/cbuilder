@@ -1,5 +1,5 @@
-class Endpoints::ModificationType < NonCrudEndpoints
-  # self.desc 'ModificationType', :test, {
+class Endpoints::GrantedSkill < NonCrudEndpoints
+  # self.desc 'GrantedSkill', :test, {
   #   # Define the action name using openapi swagger format
   #   get: {
   #     summary: "Test API Custom Action",
