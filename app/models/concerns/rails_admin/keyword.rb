@@ -5,6 +5,10 @@ module RailsAdmin::Keyword
     rails_admin do
       navigation_label I18n.t("admin.registries.label")
       navigation_icon "fa fa-tags"
+
+      configure :fighters do
+        hide
+      end
     end
   end
 end

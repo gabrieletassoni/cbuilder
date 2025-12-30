@@ -1,0 +1,5 @@
+class RemoveConditionFromGrantedSkill < ActiveRecord::Migration[7.2]
+  def change
+    remove_column :granted_skills, :condition, :string
+  end
+end
