@@ -13,7 +13,6 @@ class Profile < ApplicationRecord
 
   # Equipaggiamento effettivo (può differire dal fighter base se modificato)
   has_and_belongs_to_many :equipment
-  has_and_belongs_to_many :solos
 
   # Callback: Applica i bonus obbligatori dell'affiliazione alla creazione
   after_create :apply_mandatory_affiliation_modifiers

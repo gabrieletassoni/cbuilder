@@ -1,5 +1,5 @@
-class Endpoints::FighterSkill < NonCrudEndpoints
-  # self.desc 'FighterSkill', :test, {
+class Endpoints::GrantedMagicPath < NonCrudEndpoints
+  # self.desc 'GrantedMagicPath', :test, {
   #   # Define the action name using openapi swagger format
   #   get: {
   #     summary: "Test API Custom Action",

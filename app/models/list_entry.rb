@@ -4,8 +4,6 @@ class ListEntry < ApplicationRecord
   belongs_to :army_list, touch: true # Aggiorna updated_at della lista quando cambia l'entry
   belongs_to :profile
 
-  has_and_belongs_to_many :added_equipment, class_name: "Equipment"
-
   validates :quantity, numericality: { greater_than: 0 }
 
   # Calcola il costo totale di questa entry (Costo Profilo * Quantità)

@@ -3,11 +3,9 @@ class StatModifier < ApplicationRecord
   include RailsAdmin::StatModifier
   belongs_to :source, polymorphic: true # Affiliation, Artifact, Spell...
 
-  # has_many :requirements, as: :restrictable, dependent: :destroy
-  # accepts_nested_attributes_for :requirements, allow_destroy: true
-
   def title
-    "#{modification_type&.description} #{stat_definition&.label} #{value_integer.presence || value_string}"
+    # The stat can be + or - value, so we show it accordingly
+    "#{stat} #{value.positive? ? "+" : ""}#{value}"
   end
 
   # Controlla se questo modificatore specifico si applica al combattente

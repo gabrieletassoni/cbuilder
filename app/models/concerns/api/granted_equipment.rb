@@ -1,8 +1,8 @@
-module Api::FightersSkill
+module Api::GrantedEquipment
   extend ActiveSupport::Concern
 
   included do
-    # Use self.json_attrs to drive json rendering for
+    # Use self.json_attrs to drive json rendering for 
     # API model responses (index, show and update ones).
     # For reference:
     # https://api.rubyonrails.org/classes/ActiveModel/Serializers/JSON.html

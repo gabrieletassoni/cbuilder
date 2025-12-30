@@ -7,24 +7,23 @@ class Fighter < ApplicationRecord
   belongs_to :size
   belongs_to :affiliation, optional: true # Se è una variante specifica
 
-  has_many :fighters_skills, dependent: :destroy
-  has_many :skills, through: :fighters_skills
   has_and_belongs_to_many :keywords
-  has_and_belongs_to_many :spells
-  has_and_belongs_to_many :miracles
-  # Equipaggiamento di default (scritto sulla carta)
-  has_and_belongs_to_many :equipment
 
-  has_many :requirements_as_target, class_name: "Requirement", as: :required_entity, dependent: :destroy
-
-  has_many :profiles # Le istanze create dagli utenti
+  has_many :granted_equipments, as: :owner, dependent: :destroy
+  accepts_nested_attributes_for :granted_equipments, allow_destroy: true
+  has_many :granted_skills, as: :target, dependent: :destroy
+  accepts_nested_attributes_for :granted_skills, allow_destroy: true
+  has_many :granted_magic_paths, as: :mage, dependent: :destroy
+  accepts_nested_attributes_for :granted_magic_paths, allow_destroy: true
+  has_many :granted_deities, as: :worshiper, dependent: :destroy
+  accepts_nested_attributes_for :granted_deities, allow_destroy: true
 
   has_many :affiliation_leaders
   has_many :led_affiliations, through: :affiliation_leaders, source: :affiliation
 
   validates :name, presence: true
   validates :base_cost, numericality: { greater_than_or_equal_to: 0 }
-  validate :rank_compatibility_with_stats
+  # validate :rank_compatibility_with_stats
 
   # Compute the number of fighters for each card following these rules:
   # Numero di Combattenti per Carta

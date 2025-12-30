@@ -7,11 +7,7 @@ class Keyword < ApplicationRecord
 
   # Il Solo fornisce bonus (es. +1 AUDACIA) tramite StatModifier
   has_many :stat_modifiers, as: :source, dependent: :destroy
-  has_many :granted_skills, as: :target, dependent: :destroy
-
-  # has_many :requirements, as: :required_entity, dependent: :destroy
-
   accepts_nested_attributes_for :stat_modifiers, allow_destroy: true
+  has_many :granted_skills, as: :target, dependent: :destroy
   accepts_nested_attributes_for :granted_skills, allow_destroy: true
-  # accepts_nested_attributes_for :requirements, allow_destroy: true
 end

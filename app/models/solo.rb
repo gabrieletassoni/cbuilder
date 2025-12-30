@@ -3,9 +3,6 @@ class Solo < ApplicationRecord
   include RailsAdmin::Solo
   belongs_to :affiliation
 
-  # Relazione N:M con i Profili
-  has_and_belongs_to_many :profiles
-
   # Il Solo fornisce bonus (es. +1 AUDACIA) tramite StatModifier
   has_many :stat_modifiers, as: :source, dependent: :destroy
 
