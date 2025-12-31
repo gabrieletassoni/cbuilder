@@ -6,6 +6,8 @@ module RailsAdmin::Fighter
       navigation_label I18n.t("admin.core_entities.label")
       navigation_icon "fa fa-user-ninja"
 
+      parent Army
+
       # hide created_at and updated_at
       exclude_fields :created_at, :updated_at
 

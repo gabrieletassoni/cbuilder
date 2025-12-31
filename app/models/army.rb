@@ -10,5 +10,4 @@ class Army < ApplicationRecord
   has_many :miracles
   has_many :spells
   has_many :nexuses
-  has_many :requirements, as: :required_entity, dependent: :destroy
 end

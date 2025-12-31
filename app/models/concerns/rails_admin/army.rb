@@ -5,6 +5,10 @@ module RailsAdmin::Army
     rails_admin do
       navigation_label I18n.t("admin.core_entities.label")
       navigation_icon "fa fa-shield-halved"
+
+      configure :fighters do
+        visible false
+      end
     end
   end
 end
