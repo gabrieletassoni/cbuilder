@@ -5,12 +5,11 @@ class Solo < ApplicationRecord
 
   # Il Solo fornisce bonus (es. +1 AUDACIA) tramite StatModifier
   has_many :stat_modifiers, as: :source, dependent: :destroy
-
-  # Il Solo può avere requisiti (es. "Solo Rango 2" o "Solo Personaggi")
-  has_many :requirements, as: :restrictable, dependent: :destroy
+  accepts_nested_attributes_for :stat_modifiers, allow_destroy: true
+  has_many :granted_skills, as: :target, dependent: :destroy
+  accepts_nested_attributes_for :granted_skills, allow_destroy: true
 
   validates :name, presence: true
-  validates :cost, numericality: { greater_than_or_equal_to: 0 }
 
   # Verifica se un fighter può acquisire questo Solo
   # Nota: Non controlliamo qui l'affiliazione, quella è controllata nel Profilo
