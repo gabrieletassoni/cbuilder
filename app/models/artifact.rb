@@ -1,6 +1,7 @@
 class Artifact < ApplicationRecord
   include Api::Artifact
   include RailsAdmin::Artifact
+  belongs_to :army, optional: true
   # Il Solo fornisce bonus (es. +1 AUDACIA) tramite StatModifier
   has_many :stat_modifiers, as: :source, dependent: :destroy
   accepts_nested_attributes_for :stat_modifiers, allow_destroy: true

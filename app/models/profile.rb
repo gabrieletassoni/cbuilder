@@ -2,22 +2,30 @@ class Profile < ApplicationRecord
   include Api::Profile
   include RailsAdmin::Profile
   belongs_to :fighter
+  belongs_to :army, optional: true
   belongs_to :affiliation, optional: true
-
-  has_many :profile_modifiers, dependent: :destroy
-  has_many :stat_modifiers, through: :profile_modifiers
 
   # Relazione con le liste in cui è usato
   has_many :list_entries, dependent: :destroy
   has_many :army_lists, through: :list_entries
 
-  # Equipaggiamento effettivo (può differire dal fighter base se modificato)
-  has_and_belongs_to_many :equipment
+  has_many :stat_modifiers, as: :source, dependent: :destroy
+  accepts_nested_attributes_for :stat_modifiers, allow_destroy: true
+  has_many :granted_capabilities, as: :capable, dependent: :destroy
+  accepts_nested_attributes_for :granted_capabilities, allow_destroy: true
+  has_many :granted_equipments, as: :owner, dependent: :destroy
+  accepts_nested_attributes_for :granted_equipments, allow_destroy: true
+  has_many :granted_skills, as: :target, dependent: :destroy
+  accepts_nested_attributes_for :granted_skills, allow_destroy: true
+  has_many :granted_magic_paths, as: :mage, dependent: :destroy
+  accepts_nested_attributes_for :granted_magic_paths, allow_destroy: true
+  has_many :granted_deities, as: :worshiper, dependent: :destroy
+  accepts_nested_attributes_for :granted_deities, allow_destroy: true
 
   # Callback: Applica i bonus obbligatori dell'affiliazione alla creazione
-  after_create :apply_mandatory_affiliation_modifiers
+  # after_create :apply_mandatory_affiliation_modifiers
   # Callback: Quando creo un profilo, copio l'equipaggiamento base del Fighter
-  after_create :copy_base_equipment
+  # after_create :copy_base_equipment
 
   # Helper per sapere se è usato
   def used_in_lists?

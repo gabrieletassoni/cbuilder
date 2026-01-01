@@ -2,13 +2,15 @@ class Fighter < ApplicationRecord
   include Api::Fighter
   include RailsAdmin::Fighter
 
-  belongs_to :army
+  belongs_to :army, optional: true
   belongs_to :rank
   belongs_to :size
   belongs_to :affiliation, optional: true # Se è una variante specifica
 
   has_and_belongs_to_many :keywords
 
+  has_many :granted_capabilities, as: :capable, dependent: :destroy
+  accepts_nested_attributes_for :granted_capabilities, allow_destroy: true
   has_many :granted_equipments, as: :owner, dependent: :destroy
   accepts_nested_attributes_for :granted_equipments, allow_destroy: true
   has_many :granted_skills, as: :target, dependent: :destroy
