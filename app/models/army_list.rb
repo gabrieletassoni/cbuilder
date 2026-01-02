@@ -6,13 +6,13 @@ class ArmyList < ApplicationRecord
   belongs_to :game_format
 
   has_many :list_entries, dependent: :destroy
-  has_many :profiles, through: :list_entries
+  has_many :fighters, through: :list_entries
 
   has_many :list_nexuses, dependent: :destroy
   has_many :nexuses, through: :list_nexuses
 
   # Callback per aggiornare la cache dei punti
-  before_save :update_points_cache
+  # before_save :update_points_cache
 
   # Validazioni Standard
   validates :name, presence: true

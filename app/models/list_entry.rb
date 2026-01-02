@@ -2,7 +2,7 @@ class ListEntry < ApplicationRecord
   include Api::ListEntry
   include RailsAdmin::ListEntry
   belongs_to :army_list, touch: true # Aggiorna updated_at della lista quando cambia l'entry
-  belongs_to :profile
+  belongs_to :fighter
 
   validates :quantity, numericality: { greater_than: 0 }
 

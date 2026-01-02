@@ -3,11 +3,18 @@ class Fighter < ApplicationRecord
   include RailsAdmin::Fighter
 
   belongs_to :army, optional: true
-  belongs_to :rank
-  belongs_to :size
+  belongs_to :rank, optional: true
+  belongs_to :size, optional: true
   belongs_to :affiliation, optional: true # Se è una variante specifica
+  belongs_to :original, class_name: "Fighter", optional: true # Per le varianti specifiche
 
   has_and_belongs_to_many :keywords
+
+  # Le liste in cui è incluso questo combattente
+  has_many :list_entries, dependent: :destroy
+  has_many :army_lists, through: :list_entries
+  # The Self join original must have an has_many variants association
+  has_many :variants, class_name: "Fighter", foreign_key: "original_id", dependent: :nullify
 
   has_many :granted_capabilities, as: :capable, dependent: :destroy
   accepts_nested_attributes_for :granted_capabilities, allow_destroy: true
@@ -24,7 +31,7 @@ class Fighter < ApplicationRecord
   has_many :led_affiliations, through: :affiliation_leaders, source: :affiliation
 
   validates :name, presence: true
-  validates :base_cost, numericality: { greater_than_or_equal_to: 0 }
+  # validates :cost, numericality: true
   # validate :rank_compatibility_with_stats
 
   # Compute the number of fighters for each card following these rules:
@@ -44,15 +51,96 @@ class Fighter < ApplicationRecord
   # Una carta non deve necessariamente vedere associati ad essa il massimo di combattenti che può
   # rappresentare.
   # Before every save, apply this rule and update the fighters_on_every_card field
-  before_save do
-    cost = self.base_cost || 0
-    if cost <= 30
-      self.fighters_on_every_card = 3
-    elsif cost <= 50
-      self.fighters_on_every_card = 2
+  # before_save do
+  #   cost = self.base_cost || 0
+  #   if cost <= 30
+  #     self.fighters_on_every_card = 3
+  #   elsif cost <= 50
+  #     self.fighters_on_every_card = 2
+  #   else
+  #     self.fighters_on_every_card = 1
+  #   end
+  # end
+
+  def display_name
+    # If it is the original, just return the name + army + affiliation if presents, otherwise return name + army + affiliation and the granted things which make it unique
+    # E.g. "Warrior of Light (Variant with Sword and Shield)"
+    if original.nil?
+      name_parts = [name]
+      name_parts << army.name if army
+      name_parts << affiliation.name if affiliation
+      name_parts.join(" - ")
     else
-      self.fighters_on_every_card = 1
+      variant_parts = []
+      variant_parts = granted_skills.map(&:skill).map(&:name) unless granted_skills.empty?
+      "#{original.name} (#{variant_parts.join(", ")})"
     end
+  end
+
+  # Section for computed stats, skills, equipments, etc.
+  # --------------------------------------------------------------
+  # Compute the actual values taking into account stat_modifiers, granted equipments, granted_capabilities, granted_skills, granted_solos coming from keywords, armies, affiliations, skills, equipments, capabilities and artifacts both of this variant instance or the chain of variants up to the original one.
+  # The skills, equipments, capabilities, solos are merged (union) from all the sources.
+  # The stats are computed by starting from the base value and applying all the modifiers.
+  # stat_modfiers are like:
+  # Id	Value	Stat	Condition
+  # 1	1	wounds	 -
+  # 2	1	discipline	 -
+  # 3	1	courage	 -
+  # 4	1	discipline	keyword:13
+  # 5	1	courage	keyword:14
+  # 6	1	cost	 -
+  # 7	-(rank+1)	cost	size:2 and (skill:23 or skill:6)
+  # 8	=(nil)	one_card_every	 -
+  # 9	-1	cost	 -
+  # 10	-1	cost	 -
+  # Also from the granted_ things can come a cost modification, which is also applied to the fighter cost (keep in mind that the cost is string in order to allow complex expressions).
+  def total_cost
+    # Costs coming from actual record
+    base = cost || 0
+    equipment_cost = granted_equipments.sum do |ge|
+      ge.cost.to_i || 0
+    end
+    # Costs coming from granted capabilities
+    capability_cost = granted_capabilities.sum do |gc|
+      gc.cost.to_i || 0
+    end
+    # Costs coming from granted skills
+    skill_cost = granted_skills.sum do |gs|
+      gs.cost.to_i || 0
+    end
+    # Costs coming from granted solos
+    solo_cost = granted_solos.sum do |gs|
+      gs.cost.to_i || 0
+    end
+    
+    base + capability_cost + skill_cost + solo_cost + equipment_cost
+  end
+
+  # CALCOLO STATISTICHE FINALI (Fusion)
+  # Unisce i valori base con i bonus di affiliazione ed equipaggiamento profilo
+  def current_value(stat_code)
+    # 1. Partiamo dal valore base del combattente
+    base_val = raw_stat(stat_code)
+
+    # 2. Aggiungiamo i modificatori dell'affiliazione (se presente)
+    if affiliation
+      affiliation_mods = affiliation.stat_modifiers.where(stat_definition: StatDefinition.find_by(code: stat_code))
+      affiliation_mods.select { |m| ["add", "sub"].include?(m.modification_type.code) }.each do |mod|
+        val = mod.value_integer
+        mod.modification_type.code == "add" ? base_val += val : base_val -= val
+      end
+    end
+
+    # 3. Aggiungiamo i modificatori dell'equipaggiamento di profilo
+    profile_modifiers = granted_equipments.flat_map(&:stat_modifiers)
+    relevant_mods = profile_modifiers.select { |m| m.stat_definition.code == stat_code }
+    relevant_mods.select { |m| ["add", "sub"].include?(m.modification_type.code) }.each do |mod|
+      val = mod.value_integer
+      mod.modification_type.code == "add" ? base_val += val : base_val -= val
+    end
+
+    [base_val, 0].max
   end
 
   # Metodo di utilità per leggere il valore raw dal DB
